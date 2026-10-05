@@ -1,0 +1,27 @@
+{
+  "name": "sensory-meltdown-prevention-poc",
+  "version": "1.0.0",
+  "description": "Proof of Concept and Simulator for Smart Healthcare & Sensory Overload Prevention App (Autism & SPD)",
+  "type": "module",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "keywords": [
+    "sensory-overload",
+    "autism",
+    "healthcare",
+    "meltdown-prevention",
+    "socket.io",
+    "express",
+    "simulator"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
+    "socket.io": "^4.8.1"
+  }
+}
