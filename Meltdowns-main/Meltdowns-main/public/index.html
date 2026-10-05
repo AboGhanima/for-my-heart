@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Sensory Overload & Meltdown Prevention Simulator for Autism & Sensory Processing Disorders. Real-time vital signs and ambient noise monitoring with automated white noise calming intervention.">
+  <title>درع الحواس الذكي™ | محاكي الوقاية من نوبات الانهيار الحسي (Autism & SPD)</title>
+  
+  <!-- Google Fonts: Cairo (Arabic), Outfit (headings), and Inter (body) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+  
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <!-- Top App Navigation Bar -->
+  <header class="header">
+    <div class="header-container">
+      <div class="brand">
+        <div class="brand-icon">🧠</div>
+        <div class="brand-info">
+          <h1 data-i18n="appTitle">درع الحواس الذكي™</h1>
+          <p data-i18n="appSubtitle">محاكي الوقاية من نوبات الانهيار والتحسس الحسي (التوحد و SPD)</p>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <!-- Language Switcher (AR / EN) -->
+        <div class="lang-switcher" role="radiogroup" aria-label="Language Switcher">
+          <button class="lang-btn active" data-lang="ar" id="langArBtn">🇸🇦 العربية</button>
+          <button class="lang-btn" data-lang="en" id="langEnBtn">🇬🇧 English</button>
+        </div>
+
+        <!-- View Mode Switcher -->
+        <div class="view-tabs" role="tablist">
+          <button class="tab-btn active" id="tabSplit" data-view="split" title="View Patient Simulator and Guardian Monitor side by side">
+            <span data-i18n="tabSplit">◫ عرض مزدوج</span>
+          </button>
+          <button class="tab-btn" id="tabPatient" data-view="patient" title="View Patient Wearable Simulator only">
+            <span data-i18n="tabPatient">⌚ جهاز المريض</span>
+          </button>
+          <button class="tab-btn" id="tabGuardian" data-view="guardian" title="View Guardian Remote Monitor only">
+            <span data-i18n="tabGuardian">🛡️ لوحة ولي الأمر</span>
+          </button>
+        </div>
+
+        <!-- Connection Status Indicator -->
+        <div class="connection-pill" id="connectionStatusBadge">
+          <span class="status-dot"></span>
+          <span id="connectionStatusText" data-i18n="connConnecting">جارٍ الاتصال...</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Global Meltdown Alert Banner -->
+  <div class="main-wrapper">
+    <div class="banner-alert" id="meltdownAlertBanner">
+      <div class="banner-alert-content">
+        <div class="banner-alert-icon">🚨</div>
+        <div class="banner-alert-text">
+          <h3 id="bannerAlertTitle" data-i18n="bannerTitle">🚨 تنبيه حرج: تم اكتشاف مؤشرات نوبة انهيار حسي وشيكة!</h3>
+          <p id="bannerAlertDesc" data-i18n="bannerDesc">تجاوز معدل ضربات القلب والضوضاء المحيطة حدود الأمان. تم تفعيل الضوضاء البيضاء المهدئة تلقائياً.</p>
+        </div>
+      </div>
+      <button class="banner-alert-btn" id="dismissBannerBtn" data-i18n="bannerDismiss">إقرار / فهمت</button>
+    </div>
+
+    <!-- Main Grid: Patient Simulator (Left) & Guardian Dashboard (Right) -->
+    <div class="dashboard-grid" id="mainDashboardGrid">
+
+      <!-- ====================================================================
+           PANEL 1: PATIENT WEARABLE & SENSORY SIMULATOR (LEFT)
+           ==================================================================== -->
+      <section class="glass-card" id="patientPanel">
+        <div class="panel-header">
+          <div class="panel-title">
+            <span class="icon">⌚</span>
+            <h2 data-i18n="patientTitle">محاكي جهاز المريض القابل للارتداء</h2>
+          </div>
+          <!-- Sensory Risk Badge -->
+          <div class="badge badge-normal" id="simulatorRiskBadge">
+            <span class="badge-dot">●</span>
+            <span id="simulatorRiskText" data-i18n="riskNormal">مخاطر طبيعية</span>
+          </div>
+        </div>
+
+        <!-- Sensor Sliders -->
+        <div class="controls-group">
+          
+          <!-- Slider 1: Heart Rate (60 - 160 BPM) -->
+          <div class="sensor-control">
+            <div class="control-top">
+              <label for="heartRateSlider" class="control-label" data-i18n="heartLabel">
+                <span>❤️</span> معدل نبضات القلب (المؤشرات الحيوية)
+              </label>
+              <span class="control-val-badge val-heart" id="heartRateValDisplay">72 BPM</span>
+            </div>
+            <div class="slider-container">
+              <input 
+                type="range" 
+                id="heartRateSlider" 
+                class="custom-range" 
+                min="60" 
+                max="160" 
+                value="72" 
+                step="1"
+              >
+            </div>
+            <div class="slider-limits">
+              <span data-i18n="heartMin">60 نبضة/د (وقت الراحة)</span>
+              <span class="threshold-indicator" data-i18n="heartThreshold">⚠️ حد الخطر: &gt; 110 نبضة/د</span>
+              <span data-i18n="heartMax">160 نبضة/د (الحد الأقصى)</span>
+            </div>
+          </div>
+
+          <!-- Slider 2: Ambient Noise Level (30 - 120 dB) -->
+          <div class="sensor-control">
+            <div class="control-top">
+              <label for="noiseLevelSlider" class="control-label" data-i18n="noiseLabel">
+                <span>🔊</span> مستوى الضوضاء المحيطة (البيئة الخارجية)
+              </label>
+              <span class="control-val-badge val-noise" id="noiseLevelValDisplay">45 dB</span>
+            </div>
+            <div class="slider-container">
+              <input 
+                type="range" 
+                id="noiseLevelSlider" 
+                class="custom-range" 
+                min="30" 
+                max="120" 
+                value="45" 
+                step="1"
+              >
+            </div>
+            <div class="slider-limits">
+              <span data-i18n="noiseMin">30 ديسيبل (مكتبة هادئة)</span>
+              <span class="threshold-indicator" data-i18n="noiseThreshold">⚠️ حد الخطر: &gt; 80 ديسيبل</span>
+              <span data-i18n="noiseMax">120 ديسيبل (ضوضاء صاخبة)</span>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Quick Scenario Presets -->
+        <div class="presets-section">
+          <div class="presets-label" data-i18n="presetsLabel">⚡ سيناريوهات محاكاة سريعة بنقرة واحدة</div>
+          <div class="preset-buttons">
+            <button class="preset-btn" id="presetCalm" data-hr="72" data-noise="42">
+              <span data-i18n="presetCalmTitle">🌿 غرفة دراسة هادئة</span>
+              <small data-i18n="presetCalmSub">72 bpm · 42 dB (طبيعي)</small>
+            </button>
+            <button class="preset-btn" id="presetClassroom" data-hr="96" data-noise="74">
+              <span data-i18n="presetClassroomTitle">📚 كافيتريا نشطة</span>
+              <small data-i18n="presetClassroomSub">96 bpm · 74 dB (مرتفع)</small>
+            </button>
+            <button class="preset-btn danger" id="presetMeltdown" data-hr="128" data-noise="88">
+              <span data-i18n="presetMeltdownTitle">🚨 مشغّل نوبة التحسس</span>
+              <small data-i18n="presetMeltdownSub">128 bpm · 88 dB (حرج)</small>
+            </button>
+            <button class="preset-btn" id="presetQuietExercise" data-hr="135" data-noise="42">
+              <span data-i18n="presetExerciseTitle">🏃 رياضة في مكان هادئ</span>
+              <small data-i18n="presetExerciseSub">135 bpm · 42 dB (آمن)</small>
+            </button>
+          </div>
+        </div>
+
+        <!-- Telemetry Stream Controller -->
+        <div class="stream-bar">
+          <div class="stream-info">
+            <span data-i18n="autoEmitLabel">📡 البث التلقائي للبيانات (كل ثانيتين):</span>
+          </div>
+          <div class="stream-toggle-wrap">
+            <label class="switch" title="تبديل البث التلقائي للبيانات كل ثانيتين">
+              <input type="checkbox" id="autoEmitToggle" checked>
+              <span class="slider-toggle"></span>
+            </label>
+            <button class="btn-primary" id="sendOnceBtn" data-i18n="sendNowBtn">إرسال الآن ➔</button>
+          </div>
+        </div>
+
+        <!-- Calming Audio Intervention Module -->
+        <div class="audio-card" id="audioInterventionCard">
+          <div class="audio-header">
+            <div class="audio-title">
+              <span>🎧</span>
+              <h3 data-i18n="audioTitle">التدخل الصوتي المهدئ</h3>
+            </div>
+            <div class="audio-status-pill" id="audioStatusPill" data-i18n="audioIdle">في وضع الاستعداد</div>
+          </div>
+          <div class="audio-body">
+            <div class="sound-visualizer-orb" id="soundVisualizerOrb">
+              <span>🌊</span>
+            </div>
+            <div class="audio-controls">
+              <p class="audio-msg" id="audioMsgText" data-i18n="audioMsgDefault">
+                يتم تشغيل الضوضاء الوردية/البيضاء المهدئة تلقائياً عند تجاوز عتبة التحسس (النبض &gt; 110 والضوضاء &gt; 80) لمنع الانهيار الحسي.
+              </p>
+              <div class="audio-buttons-row">
+                <button class="btn-primary" id="manualPlaySoundBtn" data-i18n="playAudioBtn">▶ تشغيل الصوت</button>
+                <button class="btn-secondary" id="manualStopSoundBtn" data-i18n="stopAudioBtn">⏹ إيقاف</button>
+                <div class="audio-volume-slider">
+                  <span>🔈</span>
+                  <input type="range" id="soundVolumeSlider" min="0" max="1" step="0.05" value="0.75" title="مستوى الصوت">
+                  <span>🔊</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Standard HTML5 Audio Element fallback/bridge -->
+          <audio id="whiteNoiseAudio" preload="none"></audio>
+        </div>
+
+      </section>
+
+      <!-- ====================================================================
+           PANEL 2: GUARDIAN APP & REMOTE MONITOR (RIGHT)
+           ==================================================================== -->
+      <section class="glass-card" id="guardianPanel">
+        <div class="panel-header">
+          <div class="panel-title">
+            <span class="icon">🛡️</span>
+            <h2 data-i18n="guardianTitle">لوحة ولي الأمر والمراقبة الفورية عن بُعد</h2>
+          </div>
+          <!-- Remote Risk Badge -->
+          <div class="badge badge-normal" id="guardianRiskBadge">
+            <span class="badge-dot">●</span>
+            <span id="guardianRiskText" data-i18n="riskNormal">طبيعي</span>
+          </div>
+        </div>
+
+        <!-- Live Vitals Overview Grid -->
+        <div class="vitals-grid">
+          <div class="vital-card">
+            <div class="vital-icon-wrap heart">❤️</div>
+            <div class="vital-details">
+              <div class="vital-label" data-i18n="patientHeartRateLabel">معدل نبضات المريض</div>
+              <div class="vital-value">
+                <span id="guardianHeartRateVal">72</span>
+                <span class="vital-unit">BPM</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="vital-card">
+            <div class="vital-icon-wrap noise">🔊</div>
+            <div class="vital-details">
+              <div class="vital-label" data-i18n="ambientNoiseLabel">الضوضاء المحيطة</div>
+              <div class="vital-value">
+                <span id="guardianNoiseVal">45</span>
+                <span class="vital-unit">dB</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Sensory Risk Gauge Meter -->
+        <div class="risk-meter-card">
+          <div class="risk-meter-header">
+            <div>
+              <div class="vital-label" data-i18n="sensoryRiskLabel">مؤشر خطر الحمل الحسي</div>
+              <div class="risk-score-display" id="guardianRiskScoreDisplay">15%</div>
+            </div>
+            <div style="text-align: inherit;">
+              <div class="vital-label" data-i18n="statusConditionLabel">حالة المريض</div>
+              <div style="font-weight: 700; font-size: 0.95rem; color: #10b981;" id="guardianConditionLabel" data-i18n="conditionSafe">🌿 آمن ومستقر</div>
+            </div>
+          </div>
+          <div class="progress-bar-bg">
+            <div class="progress-bar-fill" id="guardianRiskProgress" style="width: 15%;"></div>
+          </div>
+        </div>
+
+        <!-- Patient Location & Context Card -->
+        <div class="location-card">
+          <div class="location-header">
+            <span>📍</span>
+            <span data-i18n="locationHeader">الموقع الحي للبيئة المحيطة بالمريض</span>
+          </div>
+          <div class="location-content">
+            <div id="guardianLocationText" data-i18n="locationText"><strong>أكاديمية غرين وود</strong> — القاعة 204 (الجناح الشرقي)</div>
+            <div style="color: var(--text-muted); font-size: 0.75rem; margin-top: 2px;" id="guardianAddressText" data-i18n="addressText">
+              742 إيفرجرين تراس، سبرينغفيلد
+            </div>
+            <span class="location-coordinates" id="guardianCoordsText" data-i18n="coordsText">إحداثيات GPS: 44.0462° شمالاً، 123.0220° غرباً</span>
+          </div>
+        </div>
+
+        <!-- Real-Time Event & Telemetry Stream Log -->
+        <div class="log-section">
+          <div class="log-header">
+            <span data-i18n="logHeader">📋 سجل التنبيهات والبث المباشر</span>
+            <button class="btn-secondary" id="clearLogsBtn" data-i18n="clearLogs" style="padding: 0.2rem 0.5rem; font-size: 0.7rem;">مسح</button>
+          </div>
+          <div class="log-list" id="telemetryLogList">
+            <div class="log-item">
+              <span class="log-time">--:--:--</span>
+              <span class="log-msg" data-i18n="logInitial">تم تشغيل شاشة مراقبة ولي الأمر. بانتظار بث بيانات المريض...</span>
+            </div>
+          </div>
+        </div>
+
+      </section>
+
+    </div>
+  </div>
+
+  <!-- ====================================================================
+       GUARDIAN EMERGENCY ALERT MODAL POPUP
+       ==================================================================== -->
+  <div class="modal-overlay" id="emergencyAlertModal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <div class="modal-header-icon">🚨</div>
+        <div class="modal-header-text">
+          <h2 data-i18n="modalTitle">🚨 تنبيه طوارئ: خطر انهيار حسي وشيك</h2>
+          <p data-i18n="modalSubtitle">تم تجاوز معايير التحميل الحسي على جهاز المريض</p>
+        </div>
+      </div>
+
+      <div class="modal-body">
+        <div class="modal-info-box">
+          <div class="modal-info-row">
+            <span class="modal-info-label" data-i18n="modalPatientLabel">المريض:</span>
+            <span class="modal-info-val" id="modalPatientName">أليكس (جهاز التحسس)</span>
+          </div>
+          <div class="modal-info-row">
+            <span class="modal-info-label" data-i18n="modalVitalsLabel">القياسات عند الإشعار:</span>
+            <span class="modal-info-val" id="modalVitalsText">128 نبضة/د | 88 ديسيبل ضوضاء</span>
+          </div>
+          <div class="modal-info-row">
+            <span class="modal-info-label" data-i18n="modalRiskLabel">مؤشر الخطر المحسوب:</span>
+            <span class="modal-info-val" style="color: #f87171;" id="modalRiskScoreText">92% (خطر حرج)</span>
+          </div>
+          <div class="modal-info-row">
+            <span class="modal-info-label" data-i18n="modalInterventionLabel">حالة التدخل:</span>
+            <span class="modal-info-val" style="color: #38bdf8;" id="modalInterventionText" data-i18n="modalInterventionVal">تم تفعيل الضوضاء البيضاء المهدئة</span>
+          </div>
+          <div class="modal-info-row">
+            <span class="modal-info-label" data-i18n="modalLocationLabel">الموقع:</span>
+            <span class="modal-info-val" id="modalLocationText">أكاديمية غرين وود (القاعة 204)</span>
+          </div>
+        </div>
+
+        <p style="font-size: 0.78rem; color: var(--text-secondary);" data-i18n="modalTip">
+          💡 <strong>الإجراء المطلوب:</strong> توجيه المريض إلى غرفة حسية هادئة والتحدث بنبرة منخفضة وجمل قصيرة.
+        </p>
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn-secondary" id="modalDismissBtn" data-i18n="modalDismiss">تم الاطلاع والإقرار</button>
+        <button class="btn-danger-large" id="modalCallAideBtn" data-i18n="modalCallAide">📞 استدعاء المشرف / المساعد بالمدرسة</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Socket.io Client Library -->
+  <script src="/socket.io/socket.io.js"></script>
+
+  <!-- Application Scripts -->
+  <script src="js/i18n.js"></script>
+  <script src="js/audio-synthesizer.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
